@@ -19,6 +19,9 @@ async function fix() {
 
     for (const filePath of data) {
       let fileContent = await fs.readFile(filePath, { encoding: 'utf-8' })
+
+      if (!fileContent) continue
+
       if (params.fixPath) fileContent = await fixPath(filePath, fileContent, alias)
       if (params.fixRequire) fileContent = await fixRequire(filePath, fileContent)
       await fs.writeFile(filePath, fileContent)

@@ -7,6 +7,39 @@
   2. import 引入 vue 文件的路径补全
 
 
+## 效果
+
+同步语法
+```
+// 转换前
+import demo from '@/components/demo'
+
+// 转换后（文件真实路径，.vue || /index.vue）
+// const demo = () => import('@/components/demo/index.vue')
+const demo = () => import('@/components/demo.vue')
+```
+
+异步语法
+```
+// 转换前
+const demo = () => import('@/components/demo')
+
+// 转换后（文件真实路径，.vue || /index.vue）
+// const demo = () => import('@/components/demo/index.vue')
+const demo = () => import('@/components/demo.vue')
+```
+
+引入资源
+```
+// 转换前
+const svg = require('@/assets/name.svg')
+
+// 转换后
+import name from '@/assets/name.svg' // 提升至顶层
+
+const svg = name
+```
+
 ## install
 
 ```
