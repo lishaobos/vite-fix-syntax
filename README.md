@@ -15,8 +15,8 @@
 import demo from '@/components/demo'
 
 // 转换后（文件真实路径，.vue || /index.vue）
-// const demo = () => import('@/components/demo/index.vue')
-const demo = () => import('@/components/demo.vue')
+// import demo from '@/components/demo/index.vue'
+import demo from '@/components/demo.vue'
 ```
 
 异步语法
@@ -51,18 +51,22 @@ npm i vite-fix-syntax -g
 * fixAll
   * Type: `boolean`
   * Default: `false`
+  * Desc: `是否执行所有修复命令`
 
 * fixPath
   * Type: `boolean`
   * Default: `false`
+  * Desc: `是否补全路径`
 
 * fixRequire
   * Type: `boolean`
   * Default: `false`
+  * Desc: `是否修复 require 语法`
 
 * config
   * Type: `string`
   * Default: `syntax-replace.js`
+  * Desc: `配置文件名`
 
 
 ## config
