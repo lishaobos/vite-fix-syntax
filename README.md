@@ -48,6 +48,10 @@ npm i vite-fix-syntax -g
 
 ## options
 
+* fixAll
+  * Type: `boolean`
+  * Default: `false`
+
 * fixPath
   * Type: `boolean`
   * Default: `false`
