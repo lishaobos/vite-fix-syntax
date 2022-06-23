@@ -1,5 +1,6 @@
 const path = require('path')
 const fs = require('fs/promises')
+const fg = require('fast-glob')
 
 const srcReg = '(\'|")(.)+(\'|")'
 const importReg = `import(.)+from(.)+${srcReg}`
@@ -16,7 +17,7 @@ function exactReplace (start, end, str, replaceStr) {
   return `${str.slice(0, start)}${replaceStr}${str.slice(end)}`
 }
 
-exports.fixPath = async function (filePath, fileContent, alias) {
+async function fixPath (filePath, fileContent, alias) {
   async function replacePath (reg, type) {
     const aliasArr = Object.keys(alias)
     const isSync = type === 'sync'
@@ -68,7 +69,7 @@ exports.fixPath = async function (filePath, fileContent, alias) {
   return fileContent
 }
 
-exports.fixRequire = async function (filePath, fileContent) {
+async function fixRequire (filePath, fileContent) {
   const extname = path.extname(filePath)
   const reg = new RegExp(requireReg, 'gm')
   const addressReg = new RegExp(srcReg, 'gm')
@@ -106,4 +107,38 @@ exports.fixRequire = async function (filePath, fileContent) {
   }
 
   return fileContent
+}
+
+const defaultGlobOptions = {
+  patterns: 'src/**/*.{js,jsx,vue}',
+  options: { ignore: ['node_modules'], onlyFiles: true }
+}
+
+const commandMap = {
+  fixPath: true,
+  fixRequire: true,
+}
+
+exports.fix = async function (params) {
+  try {
+    const { globOptions, alias = {} } = { globOptions: defaultGlobOptions, ...require(path.resolve(params.config || 'syntax-replace.js')) }
+    const data = await fg(globOptions.patterns, globOptions.options || {})
+    
+    if (params.fixAll) Object.assign(params, commandMap)
+
+    for (const filePath of data) {
+      let fileContent = await fs.readFile(filePath, { encoding: 'utf-8' })
+
+      if (!fileContent) continue
+
+      if (params.fixPath) fileContent = await fixPath(filePath, fileContent, alias)
+      if (params.fixRequire) fileContent = await fixRequire(filePath, fileContent)
+
+      await fs.writeFile(filePath, fileContent)
+    }
+
+    console.log('修复完成')
+  } catch (e) {
+    throw e
+  }
 }

@@ -1,36 +1,20 @@
 #!/usr/bin/env node
 
-const path = require('path')
-const fs = require('fs/promises')
-const minimist = require('minimist')
-const fg = require('fast-glob')
-const { fixPath, fixRequire } = require('../index')
+const { program } = require('commander')
+const pkg = require('../package.json')
+const { fix } = require('../index')
 
-const defaultGlobOptions = {
-  patterns: 'src/**/*.{js,jsx,vue}',
-  options: { ignore: ['node_modules'], onlyFiles: true }
-}
+program
+  .name(pkg.name)
+  .description(pkg.description)
+  .version(pkg.version);
 
-async function fix() {
-  try {
-    const params = minimist(process.argv.slice(2))
-    const { globOptions, alias = {} } = { globOptions: defaultGlobOptions, ...require(path.resolve(params.config || 'syntax-replace.js')) }
-    const data = await fg(globOptions.patterns, globOptions.options || {})
+program
+  .option('-fa, --fixAll', '执行所有修复命令')
+  .option('-fp, --fixPath', '补全引用 vue 文件的路径')
+  .option('-fr, --fixRequire', 'require 引入资源方式转换为 es 语法')
+  .option('-c, --config <fileName>', '指定配置文件')
+  .action(fix)
 
-    for (const filePath of data) {
-      let fileContent = await fs.readFile(filePath, { encoding: 'utf-8' })
 
-      if (!fileContent) continue
-
-      if (params.fixPath) fileContent = await fixPath(filePath, fileContent, alias)
-      if (params.fixRequire) fileContent = await fixRequire(filePath, fileContent)
-      await fs.writeFile(filePath, fileContent)
-    }
-
-    console.log('修复完成')
-  } catch (e) {
-    throw e
-  }
-}
-
-fix()
+program.parse(process.argv)

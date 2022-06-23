@@ -1,6 +1,6 @@
 {
   "name": "vite-fix-syntax",
-  "version": "0.0.2",
+  "version": "0.1.0",
   "description": "转换 webpack 中使用 require 引入资源方式，补全 import 引入 vue 文件路径，使其在 webpack 和 vite 中都可以运行。",
   "main": "index.js",
   "bin": "./bin/index.js",
@@ -12,8 +12,8 @@
   "author": "lishaobos",
   "license": "ISC",
   "dependencies": {
-    "fast-glob": "^3.2.11",
-    "minimist": "^1.2.6"
+    "commander": "^9.3.0",
+    "fast-glob": "^3.2.11"
   },
   "keywords": [
     "webpack",

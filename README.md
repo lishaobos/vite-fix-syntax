@@ -118,7 +118,7 @@ vite-fix-syntax --fixRequire
 ```
 cd my-project
 
-vite-fix-syntax --fixRequire --fixPath
+vite-fix-syntax --fixAll
 ```
 
 #### 指定自定义配置文件
@@ -126,5 +126,5 @@ vite-fix-syntax --fixRequire --fixPath
 ```
 cd my-project
 
-vite-fix-syntax --fixRequire --fixPath --config my-syntax-replace.js
+vite-fix-syntax --fixAll --config my-syntax-replace.js
 ```
